@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tasks-deployment
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: tasks
+  template:
+    metadata:
+      labels:
+        app: tasks
+    spec:
+      containers:
+        - name: tasks
+          image: barnmutahi/task-api
+          env:
+            - name: AUTH_ADDRESS
+              # value: "10.99.104.252"
+              value: "auth-service.default"
+            - name: TASKS_FOLDER
+              value: tasks
+          volumeMounts:
+            - mountPath: /app/tasks
+              name: task-volume             
+      volumes:
+        - name: task-volume
+          persistentVolumeClaim: 
+            claimName: host-pvc   
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata: 
+#   name: tasks-deployment
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels: 
+#       app: tasks  
+#   template:
+#     metadata:
+#       labels:
+#         app: tasks
+#     spec:
+#       containers:
+#         - name: tasks
+#           image: barnmutahi/kube-demo-tasks:latest 
+#           env:
+#             - name: AUTH_ADDRESS
+#               # value: "10.111.23.120" 
+#               value: "auth-service.default"
+#             - name: TASKS_FOLDER
+#               value: tasks  
+#         #       value: localhost
+#         # - name: auth
+#         #   image: barnmutahi/kube-demo-auth:latest
